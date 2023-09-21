@@ -1,0 +1,177 @@
+diff --git a/hw/xwayland/xwayland-glamor.c b/hw/xwayland/xwayland-glamor.c
+index 24620605d..6c3c446eb 100644
+--- a/hw/xwayland/xwayland-glamor.c
++++ b/hw/xwayland/xwayland-glamor.c
+@@ -203,9 +203,122 @@ xwl_glamor_get_modifiers(ScreenPtr screen, uint32_t format,
+        (*modifiers)[i] = xwl_format->modifiers[i];
+     *num_modifiers = xwl_format->num_modifiers;
+ 
++    ErrorF("found %d modifiers for format 0x%" PRIx32 "\n", xwl_format->num_modifiers, format);
++    for (i = 0; i < xwl_format->num_modifiers; i++)
++        ErrorF("\t modifier: 0x%" PRIx64 "\n", xwl_format->modifiers[i]);
++
+     return TRUE;
+ }
+ 
++static void
++xwl_load_external_modifiers(struct xwl_format *xwl_format, EGLDisplay egl_display)
++{
++    EGLint num;
++    EGLBoolean *external_only = NULL;
++    int i;
++
++    xwl_format->num_external_only = 0;
++    xwl_format->external_only = NULL;
++
++    if (egl_display == EGL_NO_DISPLAY)
++        return;
++
++    if (eglQueryDmaBufModifiersEXT(egl_display, xwl_format->format, 0, NULL, NULL, &num) != EGL_TRUE) {
++        return;
++    }
++
++    if (num == 0)
++        return;
++
++    external_only = calloc(num, sizeof(EGLBoolean));
++    if (external_only == NULL)
++        return;
++
++    xwl_format->external_only = calloc(num, sizeof(uint64_t));
++    if (xwl_format->external_only == NULL) {
++        free(external_only);
++        return;
++    }
++
++    if (eglQueryDmaBufModifiersEXT(
++        egl_display, xwl_format->format, num,
++        (EGLuint64KHR *) xwl_format->external_only, 
++        external_only, &num
++    ) != EGL_TRUE) {
++        free(xwl_format->external_only);
++        free(external_only);
++        xwl_format->external_only = NULL;
++        return;
++    }
++
++    for (i = 0; i < num; i++) {
++        if (external_only[i] == EGL_TRUE) {
++            if (xwl_format->num_external_only != i) {
++                xwl_format->external_only[xwl_format->num_external_only] = xwl_format->external_only[i];
++            }
++            xwl_format->num_external_only++;
++        }
++    }
++
++    if (xwl_format->num_external_only) {
++        if (xwl_format->num_external_only != num) {
++            xwl_format->external_only = realloc(
++                xwl_format->external_only,
++                xwl_format->num_external_only * sizeof(uint64_t)
++            );
++        }
++
++        if (xwl_format->external_only == NULL) {
++            xwl_format->num_external_only = 0;
++        }
++    } else {
++        free(xwl_format->external_only);
++        xwl_format->external_only = NULL;
++    }
++
++    free(external_only);
++}
++
++static void
++xwl_glamor_adjust_modifiers(struct xwl_screen *xwl_screen)
++{
++    int i, j, k, removed;
++    struct xwl_format *xwl_format;
++
++    if (xwl_screen->egl_display == EGL_NO_DISPLAY)
++        return;
++
++    for (i = 0; i < xwl_screen->num_formats; i++) {
++        xwl_format = &xwl_screen->formats[i];
++        xwl_load_external_modifiers(xwl_format, xwl_screen->egl_display);
++
++        removed = 0;
++        for (j = 0; j < xwl_format->num_modifiers; j++) {
++            for (k = 0; k < xwl_format->num_external_only; k++)
++                if (xwl_format->modifiers[j] == xwl_format->external_only[k])
++                    break;
++
++            if (k < xwl_format->num_external_only) {
++                ErrorF("modifier 0x%" PRIx64 " is external_only, skipping\n", xwl_format->modifiers[j]);
++                removed++;
++            } else {
++                if (removed) {
++                    xwl_format->modifiers[j - removed] = xwl_format->modifiers[j];
++                }
++            }
++        }
++
++        if (removed) {
++            xwl_format->num_modifiers -= removed;
++            xwl_format->modifiers = realloc(xwl_format->modifiers,
++                                            xwl_format->num_modifiers * sizeof(uint64_t));
++            if (!xwl_format->modifiers) {
++                xwl_format->num_modifiers = 0;
++            }
++        }
++    }
++}
++
+ static void
+ xwl_dmabuf_handle_format(void *data, struct zwp_linux_dmabuf_v1 *dmabuf,
+                          uint32_t format)
+@@ -238,6 +351,16 @@ xwl_dmabuf_handle_modifier(void *data, struct zwp_linux_dmabuf_v1 *dmabuf,
+         xwl_format->format = format;
+         xwl_format->num_modifiers = 0;
+         xwl_format->modifiers = NULL;
++        xwl_load_external_modifiers(xwl_format, xwl_screen->egl_display);
++    }
++
++    uint64_t modifier = (uint64_t) modifier_hi << 32 | (uint64_t) modifier_lo;
++    for (i = 0; i < xwl_format->num_external_only; i++) {
++        /* modifiers that don't support GL_OES_EGL_image are not supported */
++        if (xwl_format->external_only[i] == modifier) {
++            ErrorF("modifier 0x%" PRIx64 " is external_only, skipping\n", modifier);
++            return;
++        }
+     }
+ 
+     xwl_format->num_modifiers++;
+@@ -245,8 +368,7 @@ xwl_dmabuf_handle_modifier(void *data, struct zwp_linux_dmabuf_v1 *dmabuf,
+                                     xwl_format->num_modifiers * sizeof(uint64_t));
+     if (!xwl_format->modifiers)
+         return;
+-    xwl_format->modifiers[xwl_format->num_modifiers - 1]  = (uint64_t) modifier_lo;
+-    xwl_format->modifiers[xwl_format->num_modifiers - 1] |= (uint64_t) modifier_hi << 32;
++    xwl_format->modifiers[xwl_format->num_modifiers - 1]  = modifier;
+ }
+ 
+ static const struct zwp_linux_dmabuf_v1_listener xwl_dmabuf_listener = {
+@@ -467,6 +589,9 @@ xwl_glamor_init(struct xwl_screen *xwl_screen)
+         return FALSE;
+     }
+ 
++    // wayland initializes formats before egl is available, fix those formats
++    xwl_glamor_adjust_modifiers(xwl_screen);
++
+     if (!glamor_init(xwl_screen->screen, GLAMOR_USE_EGL_SCREEN)) {
+         ErrorF("Failed to initialize glamor\n");
+         return FALSE;
+diff --git a/hw/xwayland/xwayland-screen.h b/hw/xwayland/xwayland-screen.h
+index 6d1e7d1bd..db82c11b9 100644
+--- a/hw/xwayland/xwayland-screen.h
++++ b/hw/xwayland/xwayland-screen.h
+@@ -42,6 +42,8 @@ struct xwl_format {
+     uint32_t format;
+     int num_modifiers;
+     uint64_t *modifiers;
++    int num_external_only;
++    uint64_t *external_only;
+ };
+ 
+ struct xwl_screen {
