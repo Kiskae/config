@@ -7,11 +7,6 @@
     userEmail = "Kiskae@users.noreply.github.com";
   };
 
-  home.file.".vscode-server/server-env-setup".source = pkgs.writeShellScript "setup-vs-env" ''
-    . /etc/set-environment
-
-    export NIX_LD=$(cat "${pkgs.stdenv.cc}/nix-support/dynamic-linker")
-  '';
-  
+  home.file.".vscode-server/server-env-setup".source = ./server-env-setup.sh;
   home.stateVersion = "23.05";
 }

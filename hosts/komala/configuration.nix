@@ -14,8 +14,11 @@
   networking.useNetworkd = false;
   services.pipewire.enable = false;
 
-  environment.systemPackages = [
-    pkgs.wslu
+  programs.nix-ld.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    wslu
+    wget
   ];
 
   nix.extraOptions = ''
