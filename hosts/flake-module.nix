@@ -20,6 +20,14 @@
       ];
     };
 
+    komala = inputs.nixpkgs.lib.nixosSystem {
+      modules = [
+        inputs.srvos.nixosModules.desktop
+        inputs.nixos-wsl.nixosModules.wsl
+        ./komala/configuration.nix
+      ];
+    };
+
     yubikey = inputs.nixpkgs.lib.nixosSystem {
       modules = [
         ./yubikey.nix
