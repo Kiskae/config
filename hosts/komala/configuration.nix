@@ -1,4 +1,4 @@
-{
+{ lib, pkgs, ... }: {
   wsl = {
     enable = true;
     wslConf = {
@@ -13,6 +13,10 @@
   networking.hostName = "komala";
   networking.useNetworkd = false;
   services.pipewire.enable = false;
+
+  environment.systemPackages = [
+    pkgs.wslu
+  ];
 
   nix.extraOptions = ''
     experimental-features = nix-command flakes
