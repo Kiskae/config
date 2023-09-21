@@ -24,6 +24,7 @@
       modules = [
         inputs.srvos.nixosModules.desktop
         inputs.nixos-wsl.nixosModules.wsl
+        inputs.home-manager.nixosModules.home-manager
         ./komala/configuration.nix
       ];
     };

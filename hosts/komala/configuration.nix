@@ -24,4 +24,10 @@
 
   system.stateVersion = "23.05";
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.kiskae = import ./home.nix;
+  };
 }
