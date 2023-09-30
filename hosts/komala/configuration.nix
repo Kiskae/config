@@ -1,13 +1,8 @@
 { lib, pkgs, ... }: {
   wsl = {
     enable = true;
-    wslConf = {
-      automount.root = "/mnt";
-    };
     defaultUser = "kiskae";
     startMenuLaunchers = true;
-
-    nativeSystemd = true;
   };
 
   networking.hostName = "komala";
@@ -20,10 +15,6 @@
     wslu
     wget
   ];
-
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
 
   system.stateVersion = "23.05";
   nixpkgs.hostPlatform = "x86_64-linux";
