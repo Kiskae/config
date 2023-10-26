@@ -10,6 +10,8 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration_old.nix
+    ./direnv.nix
+    ./libvirt.nix
   ];
 
   # Use the systemd-boot EFI boot loader.

@@ -16,7 +16,6 @@
         srvos.mixins-systemd-boot
         inputs.nixseparatedebuginfod.nixosModules.default
         ./cetoddle/configuration.nix
-        ./cetoddle/direnv.nix
       ];
     };
 
