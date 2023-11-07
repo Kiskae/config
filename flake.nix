@@ -2,6 +2,7 @@
   description = "A very basic flake";
 
   inputs = {
+    blank.url = "github:divnix/blank";
     nixpkgs.url = "nixpkgs/nixos-23.05";
 #    nixpkgs.url = "github:Kiskae/nixpkgs/nixos-23.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -10,8 +11,9 @@
     nixseparatedebuginfod.url = "github:symphorien/nixseparatedebuginfod";
     nixseparatedebuginfod.inputs.nixpkgs.follows = "nixpkgs";
     nixseparatedebuginfod.inputs.flake-utils.follows = "flake-utils";
-    srvos.url = "github:numtide/srvos";
+    srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
+    srvos.inputs."nixos-23_05".follows = "blank";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     nixos-wsl.inputs.flake-utils.follows = "flake-utils";
