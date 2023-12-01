@@ -51,7 +51,7 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     fira-code
     fira-code-symbols
     (nerdfonts.override {fonts = ["FiraCode" "DroidSansMono"];})
@@ -80,15 +80,15 @@
 
   programs.hyprland = {
     enable = true;
-    nvidiaPatches = true;
-    xwayland.hidpi = true;
+    enableNvidiaPatches = true;
+#    xwayland.hidpi = true;
   };
 
   services.fwupd.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   services.xserver.videoDrivers = ["nvidia"];
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.latest;
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.powerManagement.enable = true;
   hardware.opengl.driSupport32Bit = true;
