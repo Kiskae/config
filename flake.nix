@@ -13,7 +13,7 @@
     nixseparatedebuginfod.inputs.flake-utils.follows = "flake-utils";
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
-    srvos.inputs."nixos-23_05".follows = "blank";
+    srvos.inputs."nixos-stable".follows = "blank";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     nixos-wsl.inputs.flake-utils.follows = "flake-utils";

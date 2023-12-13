@@ -103,22 +103,6 @@
         "type": "github"
       }
     },
-    "nixos-stable": {
-      "locked": {
-        "lastModified": 1702233072,
-        "narHash": "sha256-H5G2wgbim2Ku6G6w+NSaQaauv6B6DlPhY9fMvArKqRo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "781e2a9797ecf0f146e81425c822dca69fe4a348",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-23.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixos-wsl": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -214,7 +198,9 @@
     },
     "srvos": {
       "inputs": {
-        "nixos-stable": "nixos-stable",
+        "nixos-stable": [
+          "blank"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ]
