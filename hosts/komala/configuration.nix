@@ -1,4 +1,8 @@
-{ lib, pkgs, ... }: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   wsl = {
     enable = true;
     defaultUser = "kiskae";

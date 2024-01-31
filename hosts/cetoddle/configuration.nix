@@ -81,7 +81,7 @@
   programs.hyprland = {
     enable = true;
     enableNvidiaPatches = true;
-#    xwayland.hidpi = true;
+    #    xwayland.hidpi = true;
   };
 
   services.fwupd.enable = true;
@@ -132,7 +132,7 @@
     ];
   };
 
-  services.udev.packages = [ pkgs.yubikey-personalization ];
+  services.udev.packages = [pkgs.yubikey-personalization];
 
   programs.gnupg.agent = {
     enable = true;

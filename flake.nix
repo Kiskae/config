@@ -4,7 +4,7 @@
   inputs = {
     blank.url = "github:divnix/blank";
     nixpkgs.url = "nixpkgs/nixos-23.11";
-#    nixpkgs.url = "github:Kiskae/nixpkgs/nixos-23.05";
+    #    nixpkgs.url = "github:Kiskae/nixpkgs/nixos-23.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-utils.url = "github:numtide/flake-utils";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
@@ -13,7 +13,6 @@
     nixseparatedebuginfod.inputs.flake-utils.follows = "flake-utils";
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
-    srvos.inputs."nixos-stable".follows = "blank";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     nixos-wsl.inputs.flake-utils.follows = "flake-utils";
