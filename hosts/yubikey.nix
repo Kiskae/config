@@ -8,8 +8,8 @@ with pkgs; let
   src = fetchFromGitHub {
     owner = "drduh";
     repo = "YubiKey-Guide";
-    rev = "6437be8fda70926f11afa22a61287af63d943c24";
-    sha256 = "sha256-jm0WRnyRmwylAqRVyK0mUzYxEkmk3g0u6f+DIdMZW3I=";
+    rev = "f2e5ef2c18ee1003460941dfcfa3d6f66f9ce0a2";
+    sha256 = "sha256-AicuOR/VTr3WYFQnHrqyLcLQ6gWEE16hi+Ln50jBTWw=";
   };
 
   guide = "${src}/README.md";
@@ -19,8 +19,8 @@ with pkgs; let
   drduhConfig = fetchFromGitHub {
     owner = "drduh";
     repo = "config";
-    rev = "6bea1fdaa8732ec8625f4bac7022b25e14b15ffe";
-    sha256 = "sha256-Fto8FCVYeKviMz0VmCiXHrgMT1pVopJGGDHF0s3K4ts=";
+    rev = "8c21617100795fea2313656abdf25f93b98fdc30";
+    sha256 = "sha256-R45L/Xv3z0lJhGt781wDbjaq1qc+sGTmsUt+XHwgf4A=";
   };
 
   gpg-conf = "${drduhConfig}/gpg.conf";
@@ -66,18 +66,15 @@ with pkgs; let
     paths = [view-yubikey-guide shortcut];
   };
 in {
-  nixpkgs.config = {allowBroken = true;};
-
   isoImage.isoBaseName = lib.mkForce "nixos-yubikey";
   # Uncomment this to disable compression and speed up image creation time
   #isoImage.squashfsCompression = "gzip -Xcompression-level 1";
 
-  boot.kernelPackages = linuxPackages_latest;
   # Always copytoram so that, if the image is booted from, e.g., a
   # USB stick, nothing is mistakenly written to persistent storage.
   boot.kernelParams = ["copytoram"];
   # Secure defaults
-  boot.cleanTmpDir = true;
+  boot.tmp.cleanOnBoot = true;
   boot.kernel.sysctl = {"kernel.unprivileged_bpf_disabled" = 1;};
 
   services.pcscd.enable = true;
@@ -108,7 +105,7 @@ in {
 
     # Testing
     ent
-    #FIXME?: (haskell.lib.justStaticExecutables haskellPackages.hopenpgp-tools)
+    (haskell.lib.justStaticExecutables haskellPackages.hopenpgp-tools)
 
     # Password generation tools
     diceware

@@ -33,7 +33,7 @@
         ./yubikey.nix
         ({modulesPath, ...}: {
           imports = [
-            "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares-gnome.nix"
+            "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares-plasma5.nix"
           ];
         })
         {
