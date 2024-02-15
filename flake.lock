@@ -198,19 +198,16 @@
     },
     "srvos": {
       "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1707699075,
-        "narHash": "sha256-Zzj9ZtnqgwRV9VjBYIAtfq315v3cXn+Cq6bgNB1ZjLQ=",
+        "lastModified": 1708003942,
+        "narHash": "sha256-M0d1ouJUVCDiorvuAXifrR03geHGAf+3ELD7kuayWfI=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "e6f41dfe31ab8ae4cb1271ddd20d38c02f2222f7",
+        "rev": "e19a0dc562b1df371772d90613f91c2a6b1839b3",
         "type": "github"
       },
       "original": {
