@@ -170,11 +170,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1709470420,
-        "narHash": "sha256-Y048ZWFD0V4jRNttd5Yka260GD2rbUcBT9zLfoIrcGw=",
+        "lastModified": 1709467200,
+        "narHash": "sha256-TFCyKB9XQkNXml6KtS/WTvUJwpGNaKRlXowWLNFcvr8=",
         "owner": "symphorien",
         "repo": "nixseparatedebuginfod",
-        "rev": "f57f95f28752cf03b3f1002471cbd8e95301210e",
+        "rev": "26d97878989f31ff39b67fe80c16f94a5aca0f6a",
         "type": "github"
       },
       "original": {
